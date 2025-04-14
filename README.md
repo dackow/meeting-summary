@@ -1,94 +1,48 @@
-# 10x Astro Starter
+# Meeting Summarizer
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+[![Version](https://img.shields.io/badge/version-0.0.1-blue)](package.json)
+[![Node Version](https://img.shields.io/badge/node-22.14.0-brightgreen)](.nvmrc)
+[![License](https://img.shields.io/badge/License-Not%20Specified-lightgrey)](LICENSE)
+
+Web application using LLMs (OpenAI/Ollama) to generate meeting summaries. Built with Astro, React, and Supabase for backend/auth.
+
+**Note:** No offline mode. Users select download location each time. Errors log to console.
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+*   **Frontend:** Astro, React, Tailwind CSS
+*   **Backend/Logic:** TypeScript, Zustand/Context API
+*   **LLM:** OpenAI API, Ollama
+*   **Data/Auth:** Supabase (PostgreSQL)
+*   **Dev Tools:** Vite, ESLint, Prettier
 
-## Prerequisites
+## Getting Started Locally
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+### Prerequisites
 
-## Getting Started
+*   **Node.js:** `22.14.0` (use `nvm use`)
+*   **Package Manager:** npm, yarn, or pnpm
 
-1. Clone the repository:
+### Setup
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Run the development server:
-
-```bash
-npm run dev
-```
-
-4. Build for production:
-
-```bash
-npm run build
-```
+1.  **Clone:** `git clone <your-repository-url> && cd <repository-directory>`
+2.  **Install:** `npm install` (or `yarn install` / `pnpm install`)
+3.  **Environment:** Create a `.env` file with your `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENAI_API_KEY`, etc.
+4.  **Run Dev:** `npm run dev` (App usually runs at `http://localhost:4321`)
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+*   `npm run dev`: Start development server.
+*   `npm run build`: Build for production.
+*   `npm run preview`: Preview production build locally.
+*   `npm run lint`: Lint code.
+*   `npm run format`: Format code.
 
-## Project Structure
+## Project Status
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
-
-## AI Development Support
-
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
-
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
-
-### Cursor IDE
-
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
-
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+*   **Status:** In Development
+*   **Version:** `0.0.1`
 
 ## License
 
-MIT
+License not specified.
