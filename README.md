@@ -1,48 +1,123 @@
+```markdown
 # Meeting Summarizer
 
-[![Version](https://img.shields.io/badge/version-0.0.1-blue)](package.json)
-[![Node Version](https://img.shields.io/badge/node-22.14.0-brightgreen)](.nvmrc)
-[![License](https://img.shields.io/badge/License-Not%20Specified-lightgrey)](LICENSE)
+## Opis Projektu
 
-Web application using LLMs (OpenAI/Ollama) to generate meeting summaries. Built with Astro, React, and Supabase for backend/auth.
+Meeting Summarizer to aplikacja webowa zaprojektowana w celu automatyzacji procesu tworzenia podsumowań z transkrypcji spotkań w języku polskim. Jest skierowana do użytkowników technicznych, takich jak programiści, którzy są odpowiedzialni za dokumentowanie spotkań. Aplikacja umożliwia użytkownikom przesłanie pliku tekstowego zawierającego transkrypcję, edycję transkrypcji, generowanie podsumowania przy użyciu modelu językowego (LLM), dalszą edycję podsumowania oraz zapisanie zarówno oryginalnej transkrypcji, jak i wygenerowanego podsumowania w bazie danych. Użytkownicy mogą również przeglądać i edytować wcześniej zapisane podsumowania. Minimum Viable Product (MVP) koncentruje się na podstawowej funkcjonalności, aby zapewnić szybkie i sprawne generowanie podsumowań spotkań.
 
-**Note:** No offline mode. Users select download location each time. Errors log to console.
+## Stack Technologiczny
 
-## Tech Stack
+*   **Frontend:**
+    *   [Astro.js](https://astro.build/): Framework do budowy szybkich stron internetowych z minimalnym użyciem JavaScript po stronie klienta.
+    *   [React](https://reactjs.org/): Biblioteka JavaScript do budowy interfejsów użytkownika.
+    *   [Tailwind CSS](https://tailwindcss.com/): Utility-first framework CSS do szybkiego tworzenia interfejsów.
+    *   [Lucide React](https://lucide.dev/): Biblioteka ikon.
+*   **Backend & Baza Danych:**
+    *   [Supabase](https://supabase.com/): Backend-as-a-Service (BaaS) zapewniający uwierzytelnianie i bazę danych PostgreSQL.
+*   **Inne:**
+    *   LLM API (np. GPT-3.5 przez API lub lokalna instancja Ollama): Do generowania podsumowań.
+    *   [ESLint](https://eslint.org/): Linter JavaScript.
+    *   [Prettier](https://prettier.io/): Formater kodu.
 
-*   **Frontend:** Astro, React, Tailwind CSS
-*   **Backend/Logic:** TypeScript, Zustand/Context API
-*   **LLM:** OpenAI API, Ollama
-*   **Data/Auth:** Supabase (PostgreSQL)
-*   **Dev Tools:** Vite, ESLint, Prettier
+## Uruchomienie Lokalnie
 
-## Getting Started Locally
+Wykonaj następujące kroki, aby uruchomić projekt na swoim lokalnym komputerze:
 
-### Prerequisites
+**Wymagania Wstępne:**
 
-*   **Node.js:** `22.14.0` (use `nvm use`)
-*   **Package Manager:** npm, yarn, or pnpm
+*   [Node.js](https://nodejs.org/en/) (v22.14.0)
+*   [npm](https://www.npmjs.com/) lub [Yarn](https://yarnpkg.com/) - menedżer pakietów
 
-### Setup
+**Instalacja:**
 
-1.  **Clone:** `git clone <your-repository-url> && cd <repository-directory>`
-2.  **Install:** `npm install` (or `yarn install` / `pnpm install`)
-3.  **Environment:** Create a `.env` file with your `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENAI_API_KEY`, etc.
-4.  **Run Dev:** `npm run dev` (App usually runs at `http://localhost:4321`)
+1.  Sklonuj repozytorium:
 
-## Available Scripts
+    ```bash
+    git clone [URL repozytorium]
+    cd meeting-summarizer
+    ```
 
-*   `npm run dev`: Start development server.
-*   `npm run build`: Build for production.
-*   `npm run preview`: Preview production build locally.
-*   `npm run lint`: Lint code.
-*   `npm run format`: Format code.
+2.  Zainstaluj zależności za pomocą npm lub yarn:
 
-## Project Status
+    ```bash
+    npm install
+    # lub
+    yarn install
+    ```
 
-*   **Status:** In Development
-*   **Version:** `0.0.1`
+**Konfiguracja:**
 
-## License
+1.  **Konfiguracja Supabase:**
+    *   Utwórz projekt Supabase na stronie [https://supabase.com/](https://supabase.com/).
+    *   Uzyskaj adres URL Supabase i klucz `anon`.
+    *   Skonfiguruj schemat bazy danych zgodnie z wymaganiami projektu (tabele do przechowywania transkrypcji i podsumowań).
+    *   Skonfiguruj zmienne środowiskowe za pomocą adresu URL Supabase i klucza `anon`. Przykładowy plik `.env.example` może wyglądać tak (utwórz plik `.env` i wypełnij te wartości):
 
-License not specified.
+        ```
+        PUBLIC_SUPABASE_URL="TWÓJ_ADRES_URL_SUPABASE"
+        PUBLIC_SUPABASE_ANON_KEY="TWÓJ_KLUCZ_ANON_SUPABASE"
+        ```
+
+2.  **Konfiguracja LLM API:**
+    *   Uzyskaj klucz API od dostawcy modelu językowego (np. OpenAI dla GPT-3.5) lub skonfiguruj lokalną instancję Ollama.
+    *   Skonfiguruj swój klucz API jako zmienną środowiskową:
+
+        ```
+        OPENAI_API_KEY="TWÓJ_KLUCZ_API_OPENAI"
+        ```
+
+**Uruchomienie Aplikacji:**
+
+```bash
+npm run dev
+# lub
+yarn dev
+```
+
+Aplikacja zostanie uruchomiona w trybie deweloperskim i możesz uzyskać do niej dostęp pod adresem `http://localhost:3000` (lub port określony w konfiguracji Astro).
+
+## Dostępne Skrypty
+
+Dostępne są następujące skrypty:
+
+*   `dev`: Uruchamia serwer deweloperski.
+*   `build`: Buduje aplikację gotową do produkcji.
+*   `preview`: Podgląd zbudowanej aplikacji.
+*   `lint`: Uruchamia ESLint do sprawdzania kodu.
+*   `lint:fix`: Uruchamia ESLint i automatycznie naprawia problemy.
+*   `format`: Uruchamia Prettier do formatowania kodu.
+
+## Zakres Projektu
+
+Ten projekt koncentruje się na następujących podstawowych funkcjonalnościach MVP:
+
+*   Przesyłanie plików tekstowych z transkrypcjami (.txt, do 1MB).
+*   Edycja transkrypcji.
+*   Generowanie podsumowań za pomocą LLM (ograniczone do ~500 znaków).
+*   Edycja wygenerowanych podsumowań.
+*   Zapisywanie transkrypcji i podsumowań w bazie danych (Supabase).
+*   Wyświetlanie listy zapisanych podsumowań.
+*   Edycja istniejących podsumowań.
+*   Bezpieczny Dostęp: Wymagane uwierzytelnianie użytkownika.
+
+**Ograniczenia:**
+
+Wersja MVP **nie zawiera** następujących funkcji:
+
+*   Eksportowania podsumowań do formatu Markdown.
+*   Dodawania tagów do podsumowań.
+*   Wyodrębniania zadań, decyzji lub otwartych kwestii - koncentruje się tylko na głównym podsumowaniu tematycznym.
+*   Zaawansowanych możliwości formatowania tekstu.
+*   Wyszukiwania podsumowań po nazwie lub treści.
+*   Licznika znaków w interfejsie edycji.
+*   Pomiaru czasu generowania podsumowania.
+
+## Status Projektu
+
+Ten projekt jest obecnie w fazie rozwoju, w etapie MVP (Minimum Viable Product).
+
+## Licencja
+
+Licencja MIT
+
+```

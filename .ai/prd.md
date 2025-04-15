@@ -1,76 +1,108 @@
+```markdown
 # Dokument wymagań produktu (PRD) - Meeting Summarizer
 
 ## 1. Przegląd produktu
-Meeting Summarizer to aplikacja webowa typu SPA (Single Page Application), która umożliwia generowanie podsumowań spotkań w języku polskim na podstawie dostarczonych plików tekstowych (.txt). Podsumowania są generowane z wykorzystaniem modeli LLM (OpenAI API oraz lokalnej instancji Ollama), a następnie mogą być edytowane i zapisywane lokalnie oraz w bazie danych Supabase.
+
+Aplikacja "Meeting Summarizer" ma na celu automatyzację procesu tworzenia podsumowań spotkań na podstawie transkrypcji w języku polskim. Docelowym użytkownikiem jest osoba techniczna, taka jak programista, odpowiedzialna za dokumentowanie spotkań. Aplikacja umożliwia wczytanie pliku tekstowego z transkrypcją, edycję transkrypcji, generowanie podsumowania za pomocą LLM (Large Language Model), edycję podsumowania oraz zapisanie transkrypcji i podsumowania w bazie danych. Użytkownik ma również możliwość przeglądania i edycji wcześniej zapisanych podsumowań. MVP (Minimum Viable Product) koncentruje się na podstawowych funkcjonalnościach, zapewniając szybkie i sprawne generowanie podsumowań.
 
 ## 2. Problem użytkownika
-Użytkownicy nie mają efektywnego sposobu na szybkie streszczanie spotkań prowadzonych po polsku na podstawie transkrypcji. Ręczne przygotowywanie podsumowań jest czasochłonne i nieoptymalne. Potrzebne jest proste narzędzie, które pozwoli na wygodne tworzenie, edycję i przeglądanie podsumowań z plików .txt.
+
+Osoby odpowiedzialne za prowadzenie dokumentacji spotkań i tworzenie podsumowań w języku polskim na podstawie transkrypcji w plikach tekstowych tracą czas na ręczne tworzenie tych podsumowań. Obecne metody są czasochłonne, monotonne i podatne na błędy interpretacyjne. Tworzenie podsumowań jest czasochłonne i odciąga od innych, bardziej strategicznych zadań.
 
 ## 3. Wymagania funkcjonalne
-1. Wczytywanie pojedynczego pliku tekstowego (.txt).
-2. Prezentowanie wczytanego pliku w edytowalnej formie (jedno zdanie = jedna linia).
-3. Generowanie podsumowania za pomocą LLM (OpenAI lub Ollama).
-4. Edycja wygenerowanego podsumowania.
-5. Zapis podsumowania i transkrypcji lokalnie jako oddzielne pliki .txt — po kliknięciu "Zapisz" aplikacja wywołuje dwa kolejne dialogi zapisu (najpierw podsumowanie, potem transkrypcja), wykorzystując File System Access API lub `<a download>`.
-6. Przechowywanie metadanych, UUID oraz treści podsumowania w bazie danych Supabase.
-7. Przeglądanie listy zapisanych podsumowań (na podstawie danych z Supabase), sortowanej malejąco po dacie.
-8. Logowanie błędów do konsoli deweloperskiej.
-9. Uwierzytelnienie użytkownika (bez różnicowania rôl).
+
+*   **Wczytywanie pliku tekstowego:** Umożliwienie wczytania pliku tekstowego (.txt) z dysku lokalnego. Obsługa plików o rozmiarze do 1 MB.
+*   **Prezentacja pliku z edycją:** Wyświetlenie wczytanego tekstu transkrypcji w polu tekstowym z możliwością edycji (np. korekta literówek, usunięcie nieistotnych fragmentów). Prosta edycja tekstu (dodawanie, usuwanie, zmiana).
+*   **Generowanie podsumowania (przycisk "Podsumuj"):** Wywołanie LLM (np. GPT-3.5 przez API lub lokalnej instancji ollama) po naciśnięciu przycisku "Podsumuj". Prompt ma za zadanie wygenerować krótkie (do 500 znaków) podsumowanie głównych tematów poruszonych na spotkaniu. Wyświetlanie standardowego spinnera podczas generowania podsumowania.
+*   **Wyświetlanie i edycja podsumowania:** Wyświetlenie wygenerowanego podsumowania w polu tekstowym z możliwością edycji i poprawiania (użytkownik może poprawić podsumowanie wygenerowane przez LLM).
+*   **Zapisywanie podsumowania:** Zapisanie oryginalnej transkrypcji i wygenerowanego/zmodyfikowanego podsumowania do bazy danych (np. Supabase). Zapisanie daty utworzenia i ostatniej modyfikacji (z dokładnością do minuty). Zapisanie w tekstowym pliku logów: timestamp, błąd, stack (jeśli dostępny) w przypadku wystąpienia błędów. Zmiany w transkrypcji i podsumowaniu zapisywane po naciśnięciu przycisku "Zapisz".
+*   **Wyświetlanie listy podsumowań:** Wyświetlenie listy zapisanych podsumowań w formie tabeli z następującymi kolumnami: "Nazwa pliku", "Data utworzenia", "Data modyfikacji", "Akcje" (przycisk "Edytuj"). Lista podsumowań sortowana po dacie utworzenia (od najnowszych). Nazwa pliku wyświetlana w całości.
+*   **Wyświetlanie i edycja podsumowania:** Po kliknięciu "Edytuj" wyświetlenie oryginalnej transkrypcji i podsumowania w trybie do edycji (jak w "Nowe podsumowanie"). Wyświetlanie ogólnego komunikatu o błędzie w okienku dialogowym w przypadku problemów z LLM lub wczytywaniem pliku. Komunikat o błędzie w okienku dialogowym z możliwością skopiowania do schowka.
 
 ## 4. Granice produktu
-- Brak wsparcia dla wielu języków (tylko polski).
-- Brak wsparcia dla wielu plików na raz (jedna transkrypcja na raz).
-- Brak eksportu do markdown, tagów, wersjonowania i usuwania podsumowań.
-- Brak odzyskiwania lub ponownego przypisywania plików lokalnych.
-- Brak automatycznego zapisu (tylko przycisk "Zapisz").
-- Brak wyszukiwania lub filtrowania podsumowań.
-- Brak wsparcia dla pracy w trybie offline.
+
+*   Brak eksportowania podsumowania do formatu Markdown.
+*   Brak możliwości dodawania tagów do podsumowań.
+*   Brak wyciągania zadań do wykonania, decyzji, otwartych kwestii. MVP skupia się tylko na ogólnym podsumowaniu tematycznym.
+*   Aplikacja wymaga ręcznie przygotowanej transkrypcji.
+*   Brak zaawansowanego formatowania tekstu. Ograniczone do podstawowej edycji tekstu.
+*   Brak wyszukiwania podsumowań po nazwie pliku lub treści.
+*   Brak licznika znaków w interfejsie edycji.
+*   Aplikacja nie mierzy czasu generowania podsumowania w MVP.
 
 ## 5. Historyjki użytkowników
 
-### US-001 - Wczytanie pliku
-- Tytuł: Wczytanie transkrypcji
-- Opis: Jako użytkownik chcę wczytać plik tekstowy (.txt), aby uzyskać dostęp do jego treści.
+- US-001
+- Wczytanie transkrypcji
+- Jako użytkownik chcę móc wczytać transkrypcję spotkania z pliku TXT, aby móc ją przetworzyć.
 - Kryteria akceptacji:
-  - Użytkownik może wskazać plik z rozszerzeniem .txt
-  - Aplikacja prezentuje zawartość pliku w formie edytowalnej
+   - Użytkownik może wybrać plik TXT z dysku lokalnego.
+   - Aplikacja poprawnie wczytuje plik TXT o rozmiarze do 1 MB.
+   - Wczytany tekst transkrypcji jest wyświetlany w polu tekstowym.
+   - W przypadku błędu wczytywania (np. plik nie istnieje, brak uprawnień, nie jest TXT) wyświetlany jest ogólny komunikat o błędzie w okienku dialogowym, a szczegóły błędu zapisywane są w logach.
 
-### US-002 - Generowanie podsumowania
-- Tytuł: Generowanie podsumowania z transkrypcji
-- Opis: Jako użytkownik chcę kliknąć przycisk "Podsumuj", aby uzyskać automatyczne podsumowanie transkrypcji.
+- US-002
+- Edycja transkrypcji
+- Jako użytkownik chcę móc edytować transkrypcję przed wygenerowaniem podsumowania, aby poprawić ewentualne błędy i usunąć nieistotne fragmenty.
 - Kryteria akceptacji:
-  - Użytkownik widzi przycisk "Podsumuj"
-  - Po kliknięciu generowane jest podsumowanie (użyty LLM)
-  - Podsumowanie jest widoczne i edytowalne
+   - Użytkownik może edytować tekst w polu tekstowym zawierającym transkrypcję.
+   - Użytkownik może dodawać, usuwać i zmieniać tekst.
+   - Aplikacja obsługuje kodowanie UTF-8.
 
-### US-003 - Zapis podsumowania i transkrypcji
-- Tytuł: Zapisanie podsumowania i transkrypcji
-- Opis: Jako użytkownik chcę zapisać podsumowanie i transkrypcję lokalnie, aby mieć do nich dostęp.
+- US-003
+- Generowanie podsumowania
+- Jako użytkownik chcę móc wygenerować podsumowanie transkrypcji za pomocą LLM, aby szybko uzyskać streszczenie najważniejszych tematów poruszonych na spotkaniu.
 - Kryteria akceptacji:
-  - Kliknięcie przycisku "Zapisz" uruchamia dwa kolejne dialogi zapisu (najpierw podsumowanie, potem transkrypcja)
-  - Użytkownik może wybrać lokalizację zapisu dla każdego pliku
-  - Treść podsumowania jest dodatkowo zapisywana w bazie danych Supabase
-  - UUID i metadane zapisane w bazie danych
+   - Użytkownik może uruchomić proces generowania podsumowania poprzez naciśnięcie przycisku "Podsumuj".
+   - Podczas generowania podsumowania wyświetlany jest standardowy spinner.
+   - Po zakończeniu generowania podsumowania, wygenerowany tekst jest wyświetlany w polu tekstowym.
+   - W przypadku błędu generowania podsumowania (np. problem z LLM) wyświetlany jest ogólny komunikat o błędzie w okienku dialogowym, a szczegóły błędu zapisywane są w logach.
 
-### US-004 - Przeglądanie podsumowań
-- Tytuł: Przeglądanie listy zapisanych podsumowań
-- Opis: Jako użytkownik chcę przeglądać moje zapisane podsumowania, żeby je edytować lub przeglądać.
+- US-004
+- Edycja podsumowania
+- Jako użytkownik chcę móc edytować podsumowanie wygenerowane przez LLM, aby doprecyzować jego treść i poprawić ewentualne niedoskonałości.
 - Kryteria akceptacji:
-  - Lista sortowana malejąco po dacie utworzenia
-  - Widoczna nazwa oryginalnego pliku i data
-  - Kliknięcie otwiera edytowalny widok podsumowania (pobrany z Supabase)
+   - Użytkownik może edytować tekst w polu tekstowym zawierającym podsumowanie.
+   - Użytkownik może dodawać, usuwać i zmieniać tekst.
 
-### US-005 - Uwierzytelnienie użytkownika
-- Tytuł: Logowanie
-- Opis: Jako użytkownik chcę się zalogować, aby mieć dostęp do moich danych.
+- US-005
+- Zapisywanie podsumowania
+- Jako użytkownik chcę móc zapisać transkrypcję i podsumowanie w bazie danych, aby móc do nich wrócić w przyszłości.
 - Kryteria akceptacji:
-  - Formularz logowania jest obecny przy starcie aplikacji
-  - Po zalogowaniu dane są przypisane do użytkownika
+   - Użytkownik może zapisać transkrypcję i podsumowanie poprzez naciśnięcie przycisku "Zapisz".
+   - Po zapisaniu wyświetlana jest informacja o pomyślnym zapisaniu.
+   - Data utworzenia i ostatniej modyfikacji (z dokładnością do minuty) są zapisywane w bazie danych.
+   - W przypadku błędu zapisu wyświetlany jest ogólny komunikat o błędzie w okienku dialogowym, a szczegóły błędu zapisywane są w logach.
+
+- US-006
+- Przeglądanie listy podsumowań
+- Jako użytkownik chcę móc przeglądać listę zapisanych podsumowań, posortowaną po dacie utworzenia (od najnowszych), aby móc łatwo znaleźć potrzebne mi podsumowanie.
+- Kryteria akceptacji:
+   - Lista podsumowań jest wyświetlana w formie tabeli.
+   - Tabela zawiera kolumny: "Nazwa pliku", "Data utworzenia", "Data modyfikacji", "Akcje" (przycisk "Edytuj").
+   - Lista jest sortowana po dacie utworzenia (od najnowszych).
+   - Nazwa pliku jest wyświetlana w całości.
+
+- US-007
+- Edycja istniejącego podsumowania
+- Jako użytkownik chcę móc edytować istniejące podsumowanie, aby wprowadzić zmiany lub poprawki.
+- Kryteria akceptacji:
+   - Użytkownik może przejść do trybu edycji podsumowania poprzez kliknięcie przycisku "Edytuj" na liście podsumowań.
+   - W trybie edycji wyświetlana jest oryginalna transkrypcja i podsumowanie.
+   - Użytkownik może edytować transkrypcję i podsumowanie.
+   - Użytkownik może zapisać zmiany.
+
+- US-008
+- Bezpieczny dostęp
+- Jako użytkownik chcę żeby nikt niepowołany nie miał dostępu do moich podsumowań.
+- Kryteria akceptacji:
+   - Aplikacja wymaga podstawowego uwierzytelniania.
+   - Tylko zalogowany użytkownik ma możliwość wglądu do podsumowań.
 
 ## 6. Metryki sukcesu
-- 100% transkrypcji powinno umożliwić wygenerowanie podsumowania (o ile plik nie jest pusty lub błędny).
-- Wszystkie dane powinny być poprawnie zapisane lokalnie i zarejestrowane w bazie danych z UUID.
-- Podsumowania są dostępne i edytowalne bez potrzeby ponownego wczytywania plików.
-- Użytkownik może przeglądać i edytować podsumowania bez potrzeby ponownego generowania.
-- Brak występowania podwójnych podsumowań dla tej samej transkrypcji.
 
+*   **Poprawne generowanie podsumowania:** Dla co najmniej 90% wczytanych plików aplikacja generuje podsumowanie, które jest spójne i adekwatne do treści transkrypcji (ocena subiektywna). Oznacza to, że podsumowanie odzwierciedla główne tematy poruszane w transkrypcji.
+*   **Brak błędów krytycznych:** Aplikacja jest stabilna i nie generuje błędów uniemożliwiających jej używanie (np. błąd zapisu do bazy danych, zawieszanie się aplikacji). Brak zgłoszeń o krytycznych błędach od użytkowników.
+*   **Zapisywanie i odczytywanie podsumowań:** Aplikacja poprawnie zapisuje i odczytuje podsumowania z bazy danych, zachowując integralność danych.
+
+```
