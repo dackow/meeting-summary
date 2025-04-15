@@ -1,4 +1,3 @@
-```markdown
 # Meeting Summarizer
 
 ## Opis Projektu
@@ -120,4 +119,3 @@ Ten projekt jest obecnie w fazie rozwoju, w etapie MVP (Minimum Viable Product).
 
 Licencja MIT
 
-```
