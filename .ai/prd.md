@@ -1,4 +1,3 @@
-```markdown
 # Dokument wymagań produktu (PRD) - Meeting Summarizer
 
 ## 1. Przegląd produktu
@@ -105,4 +104,3 @@ Osoby odpowiedzialne za prowadzenie dokumentacji spotkań i tworzenie podsumowa�
 *   **Brak błędów krytycznych:** Aplikacja jest stabilna i nie generuje błędów uniemożliwiających jej używanie (np. błąd zapisu do bazy danych, zawieszanie się aplikacji). Brak zgłoszeń o krytycznych błędach od użytkowników.
 *   **Zapisywanie i odczytywanie podsumowań:** Aplikacja poprawnie zapisuje i odczytuje podsumowania z bazy danych, zachowując integralność danych.
 
-```
