@@ -13,10 +13,13 @@
 
 *   **HTTP Method:** `GET`
 *   **URL Path:** `/api/summaries`
-*   **Description:** Retrieves a list of meeting summaries belonging to the authenticated user.
+*   **Description:** Retrieves a list of meeting summaries belonging to the authenticated user, with optional filtering by creation date and sorting. By default, if no date parameters are provided, it retrieves summaries from the last 7 days.
 *   **Query Parameters:**
-    *   `sort_by`: string (default: `created_at`) - The column to sort by.
+    *   `sort_by`: string (default: `created_at`) - The column to sort by (`created_at` or `updated_at`).
     *   `sort_order`: string (default: `desc`) - The sort direction (`asc` or `desc`). Defaults satisfy the PRD requirement for sorting by creation date (newest first).
+    *   `from_dt`: string (optional) - Filter summaries created on or after this timestamp. Expected format compatible with `TIMESTAMP WITH TIME ZONE` (e.g., ISO 8601).
+    *   `to_dt`: string (optional) - Filter summaries created on or before this timestamp. Expected format compatible with `TIMESTAMP WITH TIME ZONE` (e.g., ISO 8601).
+    *   **Note:** If *neither* `from_dt` nor `to_dt` is provided, the API will default to filtering for records where `created_at` is within the last 7 days from the current server time (`created_at >= NOW() - INTERVAL '7 days' AND created_at <= NOW()`). If only one is provided, it will filter based on that one. If both are provided, it will filter based on the provided range.
 *   **Request Payload:** None
 *   **Response Payload:**
     ```json
@@ -34,6 +37,7 @@
 *   **Success Responses:**
     *   `200 OK`: Successfully retrieved the list of summaries.
 *   **Error Responses:**
+    *   `400 Bad Request`: Invalid query parameters (e.g., invalid date format).
     *   `401 Unauthorized`: Authentication required.
     *   `500 Internal Server Error`: An error occurred on the server.
 
@@ -41,7 +45,7 @@
 
 *   **HTTP Method:** `GET`
 *   **URL Path:** `/api/summaries/{id}`
-*   **Description:** Retrieves the full details of a specific meeting summary by its ID. Access is restricted to the owner of the summary via RLS.
+*   **Description:** Retrieves the full details of a specific meeting summary by its ID. Access is restricted to the owner of the summary via RLS. This endpoint includes the full transcription and summary to support the edit functionality required by the PRD.
 *   **Query Parameters:** None
 *   **Request Payload:** None
 *   **Response Payload:**
@@ -202,12 +206,14 @@
     *   `file_name`: Optional, must be a string or null.
 *   **Input Validation (on `POST /api/generate-summary`):**
     *   `transcription`: Required, must be a non-empty string.
+*   **Input Validation (on `GET /api/summaries` query parameters):**
+    *   `from_dt`, `to_dt`: If provided, must be valid timestamp strings parsable by the backend/database. `sort_by` and `sort_order` must be valid values.
 *   **Business Logic Implementation:**
     *   **User Assignment:** The API layer (or RLS on INSERT) automatically sets the `user_id` for new `meeting_summaries` records based on the authenticated user's ID (`auth.uid()`).
     *   **Timestamping:** The database (using default `NOW()` or triggered by the API) sets `created_at` on creation (`POST`) and updates `updated_at` on both creation (`POST`) and update (`PUT`).
     *   **LLM Integration:** The `POST /api/generate-summary` endpoint orchestrates the call to the external LLM API, formats the prompt, sends the transcription, processes the response, and ensures the returned summary adheres to the <= 500 character limit (e.g., via prompt engineering or truncation).
     *   **Data Isolation:** RLS policies effectively filter all queries (`SELECT`, `UPDATE`, `DELETE`) to ensure only records matching the authenticated user's `user_id` are affected. The `INSERT` policy (`WITH CHECK`) ensures new records are correctly tagged with the user's ID.
-    *   **List Sorting:** The `GET /api/summaries` endpoint implements sorting logic based on query parameters, defaulting to `created_at DESC` as per PRD.
+    *   **List Sorting & Filtering:** The `GET /api/summaries` endpoint implements sorting and filtering logic. If `from_dt` and `to_dt` are *not* provided, it defaults the filtering range to `created_at BETWEEN NOW() - INTERVAL '7 days' AND NOW()`. If one or both are provided, it uses the provided range. Sorting is applied based on `sort_by` and `sort_order`, defaulting to `created_at DESC`.
     *   **Error Handling:** The API catches errors (database errors, LLM errors, validation errors) and returns appropriate HTTP status codes (400, 401, 403, 404, 500) with generic error messages to the client. Detailed error information is logged server-side as required by the PRD.
 
 ## 5. Security Considerations
@@ -216,10 +222,3 @@
 *   **Rate Limiting:** Implementing rate limiting on the `POST /api/generate-summary` endpoint is crucial to manage costs associated with LLM API calls and protect against abuse. This would typically be configured at the API gateway or serverless function level.
 *   **Input Sanitization:** While not explicitly detailed in the plan, all user-provided text inputs (`transcription`, `summary`, `notes`, `file_name`) must be properly sanitized on the backend to prevent injection attacks (e.g., SQL injection, although RLS helps mitigate database risks, sanitization is good practice).
 *   **`file_name` Uniqueness:** The current schema/API does not enforce `file_name` uniqueness *per user*. While not a security vulnerability, it's a potential usability issue (users might get confused saving multiple summaries with the same generated file name). A unique constraint per user (`UNIQUE (user_id, file_name)`) could be added to the database schema, which the API would then need to handle on `POST`/`PUT` requests (returning a `409 Conflict` if violated). This is considered a future enhancement beyond the strict MVP described.
-
-## 6. Optimization Considerations
-
-*   **Database Indexing:** The planned indexes (`idx_meeting_summaries_user_id`, `idx_meeting_summaries_data_utworzenia` - should be `idx_meeting_summaries_created_at`, `idx_meeting_summaries_llm_generated`) are included to improve query performance for common operations like fetching a user's summaries, sorting, and filtering by generation status. An index on `data_modyfikacji` (should be `updated_at`) could be considered if sorting or filtering by modification date becomes a common requirement.
-*   **LLM Response Caching:** Implementing a time-based cache for responses from the `POST /api/generate-summary` endpoint can reduce costs and latency if users frequently regenerate summaries for the same or slightly modified transcriptions within a short time frame.
-*   **Payload Size:** For the list endpoint (`GET /api/summaries`), returning only essential metadata (excluding `transcription` and `summary`) optimizes network transfer size and database query performance.
-*   **Character Count:** While the API doesn't enforce a character limit *validation* on the transcription or provide a character count in responses for the list view *in this MVP*, the `summary` field's 500 character limit *is* enforced on `POST` and `PUT`. Adding `char_count` to the list response was proposed but is out of scope for this MVP based on PRD. The front-end is responsible for client-side character counting if needed for UI purposes.

@@ -41,8 +41,9 @@ export type Database = {
           id: string
           llm_generated: boolean
           modified_at: string
-          notes: string
+          notes: string | null
           summary: string
+          title: string
           transcription: string
           user_id: string
         }
@@ -52,8 +53,9 @@ export type Database = {
           id?: string
           llm_generated?: boolean
           modified_at?: string
-          notes: string
+          notes?: string | null
           summary: string
+          title: string
           transcription: string
           user_id: string
         }
@@ -63,8 +65,9 @@ export type Database = {
           id?: string
           llm_generated?: boolean
           modified_at?: string
-          notes?: string
+          notes?: string | null
           summary?: string
+          title?: string
           transcription?: string
           user_id?: string
         }

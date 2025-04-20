@@ -19,8 +19,8 @@ Niniejszy dokument opisuje schemat bazy danych PostgreSQL dla aplikacji Meeting 
     *   `id` UUID PRIMARY KEY DEFAULT gen_random_uuid()
     *   `user_id` UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL
     *   `file_name` VARCHAR(255)
-    *   `data_utworzenia` TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
-    *   `data_modyfikacji` TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+    *   `created_at` TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+    *   `modified_at` TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
     *   `transcription` TEXT NOT NULL
     *   `summary` VARCHAR(500) NOT NULL
     *   `llm_generated` BOOLEAN DEFAULT TRUE NOT NULL
