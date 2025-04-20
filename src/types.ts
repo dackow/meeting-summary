@@ -20,7 +20,7 @@ export type MeetingSummaryDbUpdate = Database["public"]["Tables"]["meeting_summa
 export interface CreateSummaryRequestDTO {
   file_name?: string | null; // Optional in API, can be null or undefined
   transcription: string; // Required
-  summary: string; // Required, max 500 characters
+  summary: string; // Required, max 500 characters in API spec (DB column is TEXT/string, Zod enforces length)
   llm_generated: boolean; // Required
   notes?: string; // Optional (API spec says 'string', can be empty string)
   // NOTE: 'title' is NOT part of the request body based on the original API spec.
@@ -74,7 +74,8 @@ export type MeetingSummaryInsertData = MeetingSummaryDbInsert;
 // Note: According to database.types.ts and migration history (20250420184550_title_column_added.sql),
 // INSERT requires: summary, title, transcription, user_id.
 // file_name, id, llm_generated, modified_at, notes, created_at are optional in insert.
-// Our code needs to *provide* values for the required ones (user_id, summary, title, transcription).
+// Our code needs to *provide* values for the required ones (user_id, summary, title, transcription)
+// and potentially optional ones (file_name, notes, llm_generated) if they are provided or have defaults.
 
 /**
  * Type representing the shape of a FULL row as returned by a SELECT query
