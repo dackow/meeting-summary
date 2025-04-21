@@ -1,0 +1,12 @@
+---
+// src/pages/login.astro
+// NOTE: Redirecting directly to summaries page for MVP as login is bypassed.
+// This page exists mainly to handle any accidental access to the /login path during MVP.
+// Full authentication flow and LoginForm rendering should be re-implemented after the MVP phase.
+return new Response(null, {
+  status: 302, // 302 Found indicates a temporary redirect
+  headers: { Location: "/summaries" },
+});
+---
+
+<!-- src/pages/login.astro --><!-- This page is now only for handling authentication-based redirects --><!-- No content is rendered directly by this file -->

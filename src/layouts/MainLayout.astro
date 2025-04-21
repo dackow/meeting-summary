@@ -1,0 +1,41 @@
+---
+// src/layouts/MainLayout.astro
+// NOTE: Supabase authentication check SKIPPED for MVP as per project rules.
+// This layout will now render for any access to pages using it.
+// Full authentication should be re-implemented after the MVP phase.
+
+import Topbar from "@/components/layout/Topbar";
+import { Toaster } from "@/components/ui/sonner"; // Assuming Sonner is used for Toast
+
+import "@/styles/globals.css";
+
+// Basic props for the layout
+interface Props {
+  title?: string; // Optional title for the page
+}
+
+const { title = "Meeting Summarizer" } = Astro.props; // Default title
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    {/* Global styles imported in the Astro frontmatter */}
+  </head>
+  <body class="flex flex-col min-h-screen bg-background font-sans antialiased">
+    {/* Render the Topbar component, needs to be client-side interactive */}
+    {/* It will always be rendered on pages using this layout */}
+    <Topbar client:load />
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+      {/* This is where the content of the specific page using this layout will be injected */}
+      <slot />
+    </main>
+
+    {/* Render the Toaster component globally for pages using this layout */}
+    <Toaster />
+  </body>
+</html>

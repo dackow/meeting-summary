@@ -1,8 +1,14 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
----
+// src/pages/index.astro
+// NOTE: Redirecting directly to summaries page for MVP as login is bypassed.
+// Full authentication flow should be re-implemented after the MVP phase.
+return new Response(null, {
+  status: 302, // 302 Found indicates a temporary redirect
+  headers: {
+    Location: "/summaries",
+  },
+});
 
-<Layout>
-  <Welcome />
-</Layout>
+// This page is now only for handling authentication-based redirects
+// No content is rendered directly by this file
+---

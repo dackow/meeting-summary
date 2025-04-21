@@ -1,32 +1,30 @@
 ---
-import "../styles/global.css";
-
-interface Props {
-  title?: string;
-}
-
-const { title = "10x Astro Starter" } = Astro.props;
+// src/layouts/Layout.astro
+// Optional: A base layout that might include global things like fonts, head tags, etc.
+// This could wrap MainLayout and the login page if needed.
+// If MainLayout is the top-level layout, this file might be redundant.
+// Keeping it for completeness based on description, but it's not strictly necessary
+// if MainLayout or individual pages handle <Toaster /> and base styles.
+// Let's assume MainLayout handles Toaster and base styles for simplicity as shown there.
+// This file is effectively not used in the current structure if MainLayout is the wrapper.
+// The code below is just a placeholder if a higher-level layout was desired.
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>Meeting Summarizer App</title>
+    <meta name="description" content="Meeting summarizer application" />
+    <!-- Link to your global stylesheet -->
+    <link rel="stylesheet" href="/styles/globals.css" />
   </head>
-  <body>
+  <body class="min-h-screen bg-background font-sans antialiased">
     <slot />
+    {/* If Toaster is placed here, remove it from MainLayout and login page */}
+    {/* <Toaster /> */}
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

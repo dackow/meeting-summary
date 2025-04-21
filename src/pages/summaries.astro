@@ -1,0 +1,12 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+import SummaryList from "@/components/views/SummaryList";
+
+// The auth check is handled by MainLayout
+---
+
+<!-- src/pages/summaries.astro -->
+<MainLayout title="Moje podsumowania">
+  {/* Render the React component for the list view */}
+  <SummaryList client:load />
+</MainLayout>

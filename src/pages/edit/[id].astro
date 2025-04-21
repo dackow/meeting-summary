@@ -1,0 +1,27 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+import SummaryForm from "@/components/views/SummaryForm";
+
+const { id } = Astro.params;
+
+if (!id) {
+  // Handle case where ID is missing from the URL (shouldn't happen with [id].astro route but good practice)
+  // Or if ID needs format validation.
+  // For simplicity, redirect to summaries list or show a 404.
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: "/summaries", // Redirect to list
+    },
+  });
+  // Or return new Response('Not Found', { status: 404 });
+}
+
+// The auth check is handled by MainLayout
+---
+
+<!-- src/pages/edit/[id].astro -->
+<MainLayout title={`Edytuj podsumowanie ${id}`}>
+  {/* Pass the mode and the extracted ID to the React component */}
+  <SummaryForm mode="edit" summaryId={id} client:load />
+</MainLayout>

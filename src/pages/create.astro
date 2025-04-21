@@ -1,0 +1,12 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+import SummaryForm from "@/components/views/SummaryForm";
+
+// The auth check is handled by MainLayout
+---
+
+<!-- src/pages/create.astro -->
+<MainLayout title="Nowe podsumowanie">
+  {/* Render the React component in create mode */}
+  <SummaryForm mode="create" client:load />
+</MainLayout>
